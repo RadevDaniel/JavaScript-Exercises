@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Increment Counter</title>
+    <script src="jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<div id="wrapper">
+</div>
+<script src="incrementCounter.js"></script>
+<script>
+    window.onload = function(){
+        increment("#wrapper");
+    }
+</script>
+<script>
+    function increment(selector) {
+        let container = $(selector);
+        let fragment = document.createDocumentFragment();
+        let textArea = $('<textarea>');
+        let incrementBtn = $('<button>Increment</button>');
+        let addBtn = $('<button>Add</button>');
+        let list = $('<ul>');
+
+        //textArea Formation
+        textArea.val(0);
+        textArea.addClass('counter');
+        textArea.attr('disabled', true);
+
+        //buttonsFormation
+        incrementBtn.addClass('btn');
+        incrementBtn.attr('id', 'incrementBtn');
+        addBtn.addClass('btn');
+        addBtn.attr('id', 'addBtn');
+
+        //listFormation
+        list.addClass('results');
+
+        //Events
+        $(incrementBtn).on('click', function(){
+            textArea.val(Number(textArea.val())+1);
+        });
+        $(addBtn).on('click', function(){
+            let li = $(`<li>${textArea.val()}</li>`);
+            li.appendTo(list);
+        });
+
+        //appendingElementsToFragmentAndDocument
+
+        textArea.appendTo(fragment);
+        incrementBtn.appendTo(fragment);
+        addBtn.appendTo(fragment);
+        list.appendTo(fragment);
+        container.append(fragment);
+    }
+</script>
+</body>
+</html>

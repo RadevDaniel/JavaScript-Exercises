@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Countries Table</title>
+    <style>
+        td, th { background: #DDD; padding: 5px 10px }
+        input[type='text'] { width: 60px }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+</head>
+<body onload="initializeTable()">
+<table id="countriesTable">
+    <tr>
+        <th>Country</th>
+        <th>Capital</th>
+        <th>Action</th>
+    </tr>
+    <tr>
+        <td><input type="text" id="newCountryText" /></td>
+        <td><input type="text" id="newCapitalText" /></td>
+        <td><a href="#" id="createLink">[Create]</a></td>
+    </tr>
+</table>
+<script></script>
+<script>
+    function initializeTable() {
+        let table = $('#countriesTable');
+        $('#createLink').click(createCountry);
+
+        addCountry('Bulgaria', 'Sofia');
+        addCountry('Germany', 'Berlin');
+        addCountry('Russia', 'Moscow');
+        correctLinks();
+
+        function addCountry(country, capital){
+            let row = $('<tr>');
+            row.append($('<td>').text(country));
+            row.append($('<td>').text(capital));
+            row.append($('<td>')
+                .append($('<a href="#">[Up]</a>').click(moveUp))
+                .append(' ')
+                .append($('<a href="#">[Down]</a>').click(moveDown))
+                .append(' ')
+                .append($('<a href="#">[Delete]</a>').click(deleteCountry)));
+            row.appendTo(table);
+            row.css('display', 'none');
+            row.fadeIn();
+        }
+
+        function createCountry(){
+            let country = $('#newCountryText');
+            let capital = $('#newCapitalText');
+            addCountry(country.val(), capital.val());
+            country.val('');
+            capital.val('');
+            correctLinks();
+        }
+        function deleteCountry(){
+            let row = $(this).parent().parent();
+            row.fadeOut( function() {
+                row.remove();
+                correctLinks();
+            }
+            );
+        }
+        function moveUp(){
+           let row = $(this).parent().parent();
+            row.fadeOut(function(){
+                row.insertBefore(row.prev());
+                row.fadeIn();
+                correctLinks();
+            })
+        }
+        function moveDown(){
+            let row = $(this).parent().parent();
+            row.fadeOut(function(){
+                row.insertAfter(row.next());
+                row.fadeIn();
+                correctLinks();
+            })
+        }
+        function correctLinks(){
+            let rows = $('tr');
+            $('a').css('display', 'inline');
+            let lastItem = rows.length - 1;
+            $(rows[2]).find("a:contains('Up')").css('display', 'none');
+
+            $(rows[lastItem]).find("a:contains('Down')").css('display', 'none');
+        }
+}
+</script>
+</body>
+</html>

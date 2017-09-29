@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DOM Search</title>
+    <script src="jquery-3.2.1.min.js"></script>
+    <style>
+        .add-controls, .search-controls {
+            width: 20em;
+            height: 2em;
+        }
+        input {
+            position: absolute;
+            left:6em;
+        }
+        .button {
+            background-color: darkgrey;
+            color: white;
+            font-weight: bold;
+            position: absolute;
+            left: 15em;
+            border: 1px solid black;
+            padding: 0 5px 0 5px;
+        }
+        .result-controls .button {
+            position: relative;
+            left: 0;
+            font-size: 50%;
+            margin-right:1em;
+            padding: 0;
+            bottom: 3px;
+        }
+        li {
+            list-style-type: none;
+        }
+        .hiding {
+            margin-left:-100%;
+            opacity:0.5;
+        }
+    </style>
+</head>
+<body>
+<div id="content"></div>
+<script>
+    window.onload = function () {
+        domSearch("#content");
+    }
+</script>
+<script>
+    function domSearch(divContent, condition) {
+        let link = $('<a class="button" style="display: inline-block;">add</a>');
+        let list = $('<ul class="items-list"></ul>');
+
+
+        let addControls = $('<div>');
+        addControls.attr('class', 'add-controls');
+        $('<label>Enter text:<input></label>').appendTo(addControls);
+        link.appendTo(addControls);
+
+        let searchControls = $('<div>');
+        searchControls.attr('class', 'search-controls');
+        searchControls.attr('id', 'search-text');
+        $('<label>Search:<input></label>').appendTo(searchControls);
+
+        let resultControls = $('<div>');
+        resultControls.attr('class', 'result-controls');
+        list.appendTo(resultControls);
+
+        addControls.appendTo(divContent);
+        searchControls.appendTo(divContent);
+        resultControls.appendTo(divContent);
+
+        link.on('click', function(){
+            let listItem = $('<li class="list-item"></li>/n');
+            let text = $('input')[0];
+            listItem.append($('<a class="button">X</a>')
+                    .on('click', function(){
+                        $(this).parent().remove();
+                    }))
+                    .append($('<strong>')
+                    .append(`${text.value}`))
+                    .appendTo(list);
+           text.value = '';
+        });
+
+
+        $('#search-text').keyup(function () {
+            var searchTerm = $('#search-text').val();
+            var listItem = $('li');
+            var searchSplit = searchTerm.replace(/ /g, "'):containsi('");
+
+            //extends :contains to be case insensitive
+            $.extend($.expr[':'], {
+                'containsi': function(elem, i, match, array)
+                {
+                    return (elem.textContent || elem.innerText || '').toLowerCase()
+                                    .indexOf((match[3] || "").toLowerCase()) >= 0;
+                }
+            });
+
+            $("li strong").not(":containsi('" + searchSplit + "')").each(function(e)   {
+                $(this).addClass('hiding out').removeClass('list-item');
+                setTimeout(function() {
+                    $('.out').addClass('hidden');
+                }, 300);
+            });
+
+            $("#list li:containsi('" + searchSplit + "')").each(function(e) {
+                $(this).removeClass('hidden out').addClass('in');
+                setTimeout(function() {
+                    $('.in').removeClass('hiding');
+                }, 1);
+            });
+
+
+        //search.addEventListener('input', function (){
+        //    $('strong').each(function searchEq(index, element){
+        //        if(element.textContent == search.value){
+        //        $(this).css('background', 'black');
+        //    }
+        //        else{
+//
+        //        }})
+//
+        //})
+
+    });
+    };
+</script>
+</body>
+</html>
